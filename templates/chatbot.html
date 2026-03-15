@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}AgroAI - Farming Assistant{% endblock %}
+{% block header %}AI Chatbot Assistant{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto h-[75vh] flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
+    
+    <!-- Chat Header -->
+    <div class="bg-emerald-600 p-4 text-white flex items-center shadow-md z-10">
+        <div class="relative">
+            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-emerald-600">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+            </div>
+            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-emerald-600"></div>
+        </div>
+        <div class="ml-4">
+            <h3 class="font-bold text-lg leading-tight">AgroAI Expert</h3>
+            <p class="text-xs text-emerald-100">Always online & ready to help</p>
+        </div>
+    </div>
+
+    <!-- Chat Messages Area -->
+    <div id="chat-box" class="flex-1 p-6 overflow-y-auto bg-gray-50 flex flex-col space-y-4">
+        
+        <!-- Welcome Bot Message -->
+        <div class="flex items-start">
+            <div class="flex-shrink-0 mr-3">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 border border-emerald-200">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                </div>
+            </div>
+            <div class="bg-white px-4 py-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[80%]">
+                <p class="text-gray-800">Hello {{ current_user.farmer_name }}! I am your AI farming assistant. You can ask me questions like:</p>
+                <ul class="list-disc list-inside mt-2 text-sm text-gray-600 space-y-1">
+                    <li>Which crop needs less water?</li>
+                    <li>How often should I irrigate wheat?</li>
+                    <li>How much water does rice need?</li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Chat Input Area -->
+    <div class="bg-white p-4 border-t border-gray-100">
+        <form id="chat-form" class="flex items-center">
+            <input type="text" id="chat-input" required placeholder="Type your farming question here..." class="flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 px-5 shadow-inner">
+            <button type="submit" class="ml-3 inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors shadow-md transform hover:scale-105">
+                <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+
+        function appendUserMessage(message) {
+            const msgHtml = `
+                <div class="flex items-end justify-end">
+                    <div class="bg-emerald-600 text-white px-4 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[80%]">
+                        <p>${message}</p>
+                    </div>
+                </div>
+            `;
+            chatBox.insertAdjacentHTML('beforeend', msgHtml);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function appendBotMessage(message) {
+            const msgHtml = `
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mr-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 border border-emerald-200">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                        </div>
+                    </div>
+                    <div class="bg-white px-4 py-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[80%]">
+                        <p class="text-gray-800">${message}</p>
+                    </div>
+                </div>
+            `;
+            chatBox.insertAdjacentHTML('beforeend', msgHtml);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function appendTypingIndicator() {
+            const id = 'typing-' + Date.now();
+            const msgHtml = `
+                <div id="${id}" class="flex items-start">
+                    <div class="flex-shrink-0 mr-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 border border-emerald-200">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                        </div>
+                    </div>
+                    <div class="bg-white px-4 py-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 max-w-[80%] flex space-x-2">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            `;
+            chatBox.insertAdjacentHTML('beforeend', msgHtml);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return id;
+        }
+
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // 1. Show user message
+            appendUserMessage(message);
+            chatInput.value = '';
+
+            // 2. Show typing indicator
+            const typingId = appendTypingIndicator();
+
+            // 3. Send request to API
+            try {
+                const response = await fetch('/api/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+
+                // 4. Remove typing indicator & show actual bot response
+                setTimeout(() => {
+                    const typingEl = document.getElementById(typingId);
+                    if (typingEl) typingEl.remove();
+                    appendBotMessage(data.response);
+                }, 600); // slight delay to feel natural
+
+            } catch (error) {
+                console.error('Error:', error);
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+                appendBotMessage("Sorry, I'm having trouble connecting to my central servers. Please try again later.");
+            }
+        });
+    });
+</script>
+{% endblock %}

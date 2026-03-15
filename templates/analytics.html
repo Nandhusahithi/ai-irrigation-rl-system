@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}AgroAI - Analytics{% endblock %}
+{% block header %}Farm Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Water Usage Trend -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">Water Usage Trend (Liters)</h3>
+        <div class="relative h-72 w-full">
+            <canvas id="waterUsageChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Soil Moisture Trend -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">Soil Moisture History (%)</h3>
+        <div class="relative h-72 w-full">
+            <canvas id="moistureChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div class="flex items-center mb-4">
+        <div class="p-2 bg-emerald-100 rounded-lg mr-3">
+            <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900">AI Engine Insights</h3>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Total Water Recommended</h4>
+            <p class="text-3xl font-extrabold text-blue-600">
+                {% set total_water = 0 %}
+                {% for item in chart_data %}
+                    {% set total_water = total_water + item.water %}
+                {% endfor %}
+                {{ total_water|int if record else 0 }} L
+            </p>
+        </div>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Average Moisture</h4>
+            <p class="text-3xl font-extrabold text-emerald-600">
+                {% set total_moisture = 0 %}
+                {% if chart_data %}
+                    {% for item in chart_data %}
+                        {% set total_moisture = total_moisture + item.moisture %}
+                    {% endfor %}
+                    {{ (total_moisture / chart_data|length)|round(1) }}%
+                {% else %}
+                    0%
+                {% endif %}
+            </p>
+        </div>
+        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Total Decisions</h4>
+            <p class="text-3xl font-extrabold text-indigo-600">{{ chart_data|length }}</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Embedded Data from Server
+    const rawData = {{ chart_data|tojson }};
+    
+    // Group by Date for Charting
+    const dateMap = {};
+    rawData.forEach(item => {
+        if (!dateMap[item.date]) {
+            dateMap[item.date] = { water: 0, moistureSum: 0, count: 0 };
+        }
+        dateMap[item.date].water += item.water;
+        dateMap[item.date].moistureSum += item.moisture;
+        dateMap[item.date].count += 1;
+    });
+
+    const labels = Object.keys(dateMap);
+    const waterData = labels.map(date => dateMap[date].water);
+    const moistureData = labels.map(date => dateMap[date].moistureSum / dateMap[date].count);
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Water Usage Chart
+        const ctxWater = document.getElementById('waterUsageChart').getContext('2d');
+        new Chart(ctxWater, {
+            type: 'bar',
+            data: {
+                labels: labels.length ? labels : ['No Data'],
+                datasets: [{
+                    label: 'Water Used (Liters)',
+                    data: waterData.length ? waterData : [0],
+                    backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                    borderColor: 'rgba(37, 99, 235, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Moisture Chart
+        const ctxMoisture = document.getElementById('moistureChart').getContext('2d');
+        new Chart(ctxMoisture, {
+            type: 'line',
+            data: {
+                labels: labels.length ? labels : ['No Data'],
+                datasets: [{
+                    label: 'Avg Soil Moisture (%)',
+                    data: moistureData.length ? moistureData : [0],
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

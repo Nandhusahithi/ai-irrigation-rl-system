@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}AgroAI - Crop Selection{% endblock %}
+{% block header %}Select Your Crop{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <p class="text-gray-600">Please select the crop you are currently planning to irrigate. The AI model will use specific water requirements optimized for your selection to make the best recommendation.</p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Rice -->
+    <a href="{{ url_for('irrigation_input', crop='Rice') }}" class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 overflow-hidden text-left block">
+        <div class="h-32 bg-emerald-100 relative w-full flex items-center justify-center">
+            <!-- Decorative SVG for Rice -->
+            <svg class="h-16 w-16 text-emerald-500 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+            </svg>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Rice</h3>
+            <p class="text-sm text-gray-500 mb-4">High water requirement. Prefers flooded conditions and moist soil.</p>
+            <span class="text-emerald-600 font-medium flex items-center text-sm">
+                Select Crop <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </span>
+        </div>
+    </a>
+
+    <!-- Wheat -->
+    <a href="{{ url_for('irrigation_input', crop='Wheat') }}" class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 overflow-hidden text-left block">
+        <div class="h-32 bg-yellow-100 relative w-full flex items-center justify-center">
+            <svg class="h-16 w-16 text-yellow-500 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Wheat</h3>
+            <p class="text-sm text-gray-500 mb-4">Moderate water requirement. Needs measured irrigation at specific stages.</p>
+            <span class="text-yellow-600 font-medium flex items-center text-sm">
+                Select Crop <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </span>
+        </div>
+    </a>
+
+    <!-- Maize -->
+    <a href="{{ url_for('irrigation_input', crop='Maize') }}" class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 overflow-hidden text-left block">
+        <div class="h-32 bg-orange-100 relative w-full flex items-center justify-center">
+            <svg class="h-16 w-16 text-orange-500 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+            </svg>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Maize</h3>
+            <p class="text-sm text-gray-500 mb-4">Moderate to high water requirement. Vulnerable to drought during tasseling.</p>
+            <span class="text-orange-600 font-medium flex items-center text-sm">
+                Select Crop <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </span>
+        </div>
+    </a>
+
+    <!-- Cotton -->
+    <a href="{{ url_for('irrigation_input', crop='Cotton') }}" class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 overflow-hidden text-left block">
+        <div class="h-32 bg-blue-100 relative w-full flex items-center justify-center">
+            <svg class="h-16 w-16 text-blue-500 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Cotton</h3>
+            <p class="text-sm text-gray-500 mb-4">Low to moderate water requirement. Over-irrigation can reduce yields.</p>
+            <span class="text-blue-600 font-medium flex items-center text-sm">
+                Select Crop <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </span>
+        </div>
+    </a>
+
+    <!-- Tomato -->
+    <a href="{{ url_for('irrigation_input', crop='Tomato') }}" class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 overflow-hidden text-left block">
+        <div class="h-32 bg-red-100 relative w-full flex items-center justify-center">
+            <svg class="h-16 w-16 text-red-500 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Tomato</h3>
+            <p class="text-sm text-gray-500 mb-4">Moderate water requirement. Needs consistent moisture for quality fruit.</p>
+            <span class="text-red-600 font-medium flex items-center text-sm">
+                Select Crop <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </span>
+        </div>
+    </a>
+
+    <!-- Potato -->
+    <a href="{{ url_for('irrigation_input', crop='Potato') }}" class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-300 overflow-hidden text-left block">
+        <div class="h-32 bg-purple-100 relative w-full flex items-center justify-center">
+            <svg class="h-16 w-16 text-purple-500 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4M8 16H8.01M16 8H16.01" />
+            </svg>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Potato</h3>
+            <p class="text-sm text-gray-500 mb-4">Moderate water requirement. Sensitive to water stress during tuber formation.</p>
+            <span class="text-purple-600 font-medium flex items-center text-sm">
+                Select Crop <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </span>
+        </div>
+    </a>
+</div>
+{% endblock %}

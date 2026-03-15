@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}AgroAI - Irrigation Input{% endblock %}
+{% block header %}Farm Conditions Input{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 bg-emerald-50 border-b border-emerald-100">
+            <h3 class="text-lg font-bold text-emerald-800 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                AI Decision Engine
+            </h3>
+            <p class="text-sm text-emerald-600 mt-1">
+                Provide accurate metrics for your farm. Our Reinforcement Learning model will process these inputs to generate a tailored irrigation recommendation.
+            </p>
+        </div>
+        
+        <form action="{{ url_for('irrigation_input') }}" method="POST" class="p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Section 1: Basic Info -->
+                <div class="space-y-6">
+                    <div>
+                        <label for="crop_type" class="block text-sm font-semibold text-gray-700">Selected Crop</label>
+                        <select id="crop_type" name="crop_type" required class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md shadow-sm bg-gray-50 border border-gray-200">
+                            <option value="" disabled {% if not request.args.get('crop') %}selected{% endif %}>Select a crop</option>
+                            <option value="Rice" {% if request.args.get('crop') == 'Rice' %}selected{% endif %}>Rice</option>
+                            <option value="Wheat" {% if request.args.get('crop') == 'Wheat' %}selected{% endif %}>Wheat</option>
+                            <option value="Maize" {% if request.args.get('crop') == 'Maize' %}selected{% endif %}>Maize</option>
+                            <option value="Cotton" {% if request.args.get('crop') == 'Cotton' %}selected{% endif %}>Cotton</option>
+                            <option value="Tomato" {% if request.args.get('crop') == 'Tomato' %}selected{% endif %}>Tomato</option>
+                            <option value="Potato" {% if request.args.get('crop') == 'Potato' %}selected{% endif %}>Potato</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="soil_moisture" class="block text-sm font-semibold text-gray-700">Soil Moisture (%)</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <input type="number" step="0.1" name="soil_moisture" id="soil_moisture" required placeholder="e.g. 45.5" class="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-4 pr-12 sm:text-sm border-gray-300 rounded-md py-3 border bg-gray-50">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">%</span>
+                            </div>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">Current moisture level of your soil</p>
+                    </div>
+                </div>
+
+                <!-- Section 2: Weather Data -->
+                <div class="space-y-6">
+                    <div>
+                        <label for="weather_type" class="block text-sm font-semibold text-gray-700">Weather Condition</label>
+                        <select id="weather_type" name="weather_type" required class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md shadow-sm bg-gray-50 border border-gray-200">
+                            <option value="Sunny">Sunny</option>
+                            <option value="Cloudy">Cloudy</option>
+                            <option value="Rainy">Rainy</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="temperature" class="block text-sm font-semibold text-gray-700">Temperature (°C)</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <input type="number" step="0.1" name="temperature" id="temperature" required placeholder="32" class="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-3 pr-8 sm:text-sm border-gray-300 rounded-md py-3 border bg-gray-50">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">°C</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="humidity" class="block text-sm font-semibold text-gray-700">Humidity (%)</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <input type="number" step="0.1" name="humidity" id="humidity" required placeholder="60" class="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-3 pr-8 sm:text-sm border-gray-300 rounded-md py-3 border bg-gray-50">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="rainfall_level" class="block text-sm font-semibold text-gray-700">Expected Rainfall (mm)</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <input type="number" step="0.1" name="rainfall_level" id="rainfall_level" required placeholder="0.0" class="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-4 pr-12 sm:text-sm border-gray-300 rounded-md py-3 border bg-gray-50">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 border-t border-gray-100 pt-8 flex justify-end">
+                <button type="button" onclick="window.location.href='{{ url_for('dashboard') }}'" class="bg-white py-3 px-6 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 mr-4 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" class="bg-emerald-600 border border-transparent rounded-md shadow-sm py-3 px-8 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors flex items-center">
+                    <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    Analyze & Recommend
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if recommendation %}
+<!-- Result Modal/Section (would be shown after processing, we pass recommendation down from app.py) -->
+<div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" id="resultModal">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="document.getElementById('resultModal').style.display='none'"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        
+        <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 pb-8">
+            <div>
+                {% if recommendation.decision == 'Irrigate' %}
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-4">
+                    <svg class="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                </div>
+                {% else %}
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <svg class="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                {% endif %}
+                
+                <div class="mt-3 text-center sm:mt-5">
+                    <h3 class="text-2xl leading-6 font-extrabold text-gray-900 mb-2" id="modal-title">
+                        {{ recommendation.decision }}
+                    </h3>
+                    <div class="mt-2">
+                        {% if recommendation.decision == 'Irrigate' %}
+                            <p class="text-sm text-gray-600 mb-4">
+                                The AI model recommends irrigation based on low moisture and current weather conditions.
+                            </p>
+                            <div class="bg-blue-50 p-4 rounded-md inline-block border border-blue-100">
+                                <span class="block text-blue-900 text-xs uppercase font-bold tracking-wider mb-1">Recommended Amount</span>
+                                <span class="block text-3xl font-extrabold text-blue-600">{{ recommendation.water_amount }} Liters</span>
+                            </div>
+                        {% else %}
+                            <p class="text-sm text-gray-600 mb-4">
+                                The AI model suggests NO irrigation is needed right now to prevent water waste and optimize yield.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 sm:mt-10 flex border-t pt-4">
+                <a href="{{ url_for('history') }}" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:text-sm">
+                    View in History
+                </a>
+                <button type="button" onclick="document.getElementById('resultModal').style.display='none'" class="ml-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:text-sm">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

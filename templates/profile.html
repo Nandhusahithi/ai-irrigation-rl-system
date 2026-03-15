@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}AgroAI - Farmer Profile{% endblock %}
+{% block header %}Farmer Profile Settings{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto pb-12">
+    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+        
+        <!-- Profile Header -->
+        <div class="bg-emerald-700 px-8 py-10 text-white relative">
+            <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+            <div class="relative z-10 flex items-center">
+                <div class="h-24 w-24 rounded-full bg-white text-emerald-700 flex items-center justify-center text-4xl font-extrabold border-4 border-emerald-500 shadow-lg">
+                    {{ current_user.farmer_name[0]|upper }}
+                </div>
+                <div class="ml-6">
+                    <h2 class="text-3xl font-bold">{{ current_user.farmer_name }}</h2>
+                    <p class="text-emerald-100 flex items-center mt-1">
+                        <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                        {{ current_user.email }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <form action="{{ url_for('profile') }}" method="POST" class="p-8">
+            <h3 class="text-lg font-medium text-gray-900 mb-6 pb-2 border-b">Personal Information</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <label for="farmer_name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                    <input type="text" name="farmer_name" id="farmer_name" value="{{ current_user.farmer_name }}" required class="mt-1 focus:ring-emerald-500 focus:border-emerald-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md py-2 px-3 border bg-gray-50">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-500">Email Address (Cannot be changed)</label>
+                    <input type="email" id="email" value="{{ current_user.email }}" disabled class="mt-1 block w-full shadow-sm sm:text-sm border-gray-200 rounded-md py-2 px-3 border bg-gray-100 text-gray-500 cursor-not-allowed">
+                </div>
+            </div>
+
+            <h3 class="text-lg font-medium text-gray-900 mb-6 pb-2 border-b">Farm Details</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="md:col-span-2">
+                    <label for="farm_location" class="block text-sm font-medium text-gray-700">Farm Location / Region</label>
+                    <input type="text" name="farm_location" id="farm_location" value="{{ current_user.farm_location or '' }}" placeholder="e.g. Punjab, India" class="mt-1 focus:ring-emerald-500 focus:border-emerald-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md py-2 px-3 border bg-gray-50">
+                </div>
+                
+                <div>
+                    <label for="farm_size" class="block text-sm font-medium text-gray-700">Farm Size (Acres)</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <input type="number" step="0.1" name="farm_size" id="farm_size" value="{{ current_user.farm_size or '' }}" placeholder="5.5" class="focus:ring-emerald-500 focus:border-emerald-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md py-2 pl-3 border bg-gray-50">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">Acres</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="preferred_crops" class="block text-sm font-medium text-gray-700">Preferred / Active Crops</label>
+                    <input type="text" name="preferred_crops" id="preferred_crops" value="{{ current_user.preferred_crops or '' }}" placeholder="e.g. Rice, Wheat, Tomato" class="mt-1 focus:ring-emerald-500 focus:border-emerald-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md py-2 px-3 border bg-gray-50">
+                    <p class="mt-1 text-xs text-gray-500">Comma-separated list of crops you are currently growing.</p>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-gray-100 flex justify-end">
+                <button type="submit" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
